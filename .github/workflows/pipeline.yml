@@ -27,6 +27,8 @@ jobs:
             BUILD_ID=$GITHUB_RUN_NUMBER
             IMAGE_TAG=$COMMIT_ID-$BUILD_ID
             echo "IMAGE_TAG=$IMAGE_TAG" >> $GITHUB_ENV
+      - name: Build and tag Docker image
+        run: docker build -t my-docker-image .
       - name: Tag Docker image with ECR repository URL
         run: |
             docker tag my-docker-image ${{ secrets.AWS_ECR_REGISTRY }}/alb-webapp-nginx:latest
