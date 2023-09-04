@@ -20,4 +20,15 @@ jobs:
           pwd
           mkdir sonziib
           ls -al
+      - name: ssh to aws ec2 instance
+        env:
+            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+            SSH_USER: ubuntu
+            REMOTE_HOST: 3.129.67.247
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/ec2-private-key.pem
+          chmod 600 ~/.ssh/ec2-private-key.pem 
+          scp -i ~/.ssh/ec2-private-key.pem -o StrictHostKeyChecking=no docker-compose.yml $SSH_USER@$REMOTE_HOST:~/docker-compose-copy.yml
+          ssh -i ~/.ssh/ec2-private-key.pem -o StrictHostKeyChecking=no $SSH_USER@$REMOTE_HOST "ls -al && docker ps -a"
           
